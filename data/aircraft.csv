@@ -1,0 +1,9 @@
+aircraft_id,registration,type,base_id,total_available_hours,maintenance_downtime_hours,defect_count
+A001,VT-ABC,C172,B01,190,27,0
+A002,VT-XYZ,PA28,B02,197,37,3
+A003,VT-DEF,DA40,B01,164,28,1
+A004,VT-GHI,SR20,B02,193,67,8
+A005,VT-JKL,C172,B01,155,57,6
+A006,VT-MNO,PA28,B02,152,21,1
+A007,VT-PQR,DA40,B01,163,34,8
+A008,VT-STU,SR20,B02,188,21,8

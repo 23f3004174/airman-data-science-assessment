@@ -1,0 +1,91 @@
+cadet_id,subject,chapters_completed,total_chapters,avg_quiz_score,last_active_date,practice_tests_attempted
+C001,Meteorology,10,26,99,2026-05-10,6
+C001,Navigation,10,27,99,2026-04-07,0
+C001,Air Regulations,14,20,76,2026-02-26,1
+C002,Meteorology,14,25,69,2026-02-21,8
+C002,Navigation,20,28,96,2026-04-27,8
+C002,Air Regulations,13,27,52,2026-04-30,5
+C003,Meteorology,19,22,81,2026-04-12,2
+C003,Navigation,15,20,90,2026-04-07,9
+C003,Air Regulations,29,30,52,2026-04-22,9
+C004,Meteorology,17,30,92,2026-03-21,8
+C004,Navigation,7,25,65,2026-02-18,1
+C004,Air Regulations,9,22,70,2026-04-03,3
+C005,Meteorology,13,20,64,2026-04-14,7
+C005,Navigation,15,24,59,2026-03-01,9
+C005,Air Regulations,13,20,81,2026-03-29,3
+C006,Meteorology,8,20,69,2026-04-05,2
+C006,Navigation,26,26,72,2026-04-05,1
+C006,Air Regulations,14,30,63,2026-02-25,3
+C007,Meteorology,9,23,70,2026-04-25,7
+C007,Navigation,16,29,66,2026-02-14,8
+C007,Air Regulations,22,27,91,2026-02-18,3
+C008,Meteorology,24,23,95,2026-05-04,8
+C008,Navigation,21,27,85,2026-03-29,1
+C008,Air Regulations,8,29,43,2026-03-05,8
+C009,Meteorology,23,23,74,2026-04-25,2
+C009,Navigation,21,25,68,2026-04-30,10
+C009,Air Regulations,23,23,71,2026-05-03,8
+C010,Meteorology,6,27,69,2026-04-28,8
+C010,Navigation,19,26,76,2026-05-07,8
+C010,Air Regulations,26,27,91,2026-04-05,0
+C011,Meteorology,13,26,92,2026-05-14,3
+C011,Navigation,7,29,42,2026-03-21,5
+C011,Air Regulations,22,21,43,2026-05-06,7
+C012,Meteorology,14,20,66,2026-04-21,2
+C012,Navigation,28,30,81,2026-03-22,5
+C012,Air Regulations,19,26,95,2026-03-27,6
+C013,Meteorology,22,21,48,2026-02-20,5
+C013,Navigation,10,21,74,2026-03-25,8
+C013,Air Regulations,12,22,93,2026-05-14,0
+C014,Meteorology,19,24,83,2026-03-06,6
+C014,Navigation,17,28,92,2026-04-15,3
+C014,Air Regulations,16,27,49,2026-04-09,3
+C015,Meteorology,6,21,91,2026-02-19,6
+C015,Navigation,29,29,99,2026-05-12,3
+C015,Air Regulations,7,23,46,2026-02-27,0
+C016,Meteorology,24,27,83,2026-05-08,3
+C016,Navigation,17,20,68,2026-04-15,8
+C016,Air Regulations,6,23,48,2026-03-11,4
+C017,Meteorology,23,23,60,2026-03-02,9
+C017,Navigation,31,30,60,2026-04-14,4
+C017,Air Regulations,21,22,54,2026-03-23,4
+C018,Meteorology,6,24,75,2026-02-28,2
+C018,Navigation,26,30,67,2026-03-04,7
+C018,Air Regulations,16,20,100,2026-02-21,10
+C019,Meteorology,21,26,60,2026-02-14,6
+C019,Navigation,9,26,59,2026-03-27,2
+C019,Air Regulations,20,28,55,2026-04-16,4
+C020,Meteorology,19,22,98,2026-05-07,8
+C020,Navigation,18,26,75,2026-03-08,2
+C020,Air Regulations,12,26,56,2026-04-18,5
+C021,Meteorology,7,30,99,2026-03-18,5
+C021,Navigation,22,21,86,2026-04-20,0
+C021,Air Regulations,17,24,83,2026-02-26,9
+C022,Meteorology,7,20,52,2026-02-28,10
+C022,Navigation,11,28,70,2026-04-18,5
+C022,Air Regulations,5,24,53,2026-04-20,1
+C023,Meteorology,12,27,84,2026-02-26,3
+C023,Navigation,12,26,75,2026-04-03,4
+C023,Air Regulations,19,26,74,2026-02-20,5
+C024,Meteorology,13,24,63,2026-03-10,7
+C024,Navigation,8,27,91,2026-03-15,5
+C024,Air Regulations,16,23,60,2026-03-23,0
+C025,Meteorology,12,29,87,2026-04-26,0
+C025,Navigation,22,24,99,2026-03-01,9
+C025,Air Regulations,14,26,49,2026-04-19,5
+C026,Meteorology,17,23,76,2026-04-13,7
+C026,Navigation,25,28,100,2026-02-16,5
+C026,Air Regulations,20,24,86,2026-02-21,7
+C027,Meteorology,10,27,86,2026-03-30,2
+C027,Navigation,22,22,71,2026-04-21,8
+C027,Air Regulations,6,30,73,2026-05-10,1
+C028,Meteorology,6,30,88,2026-05-14,6
+C028,Navigation,12,22,44,2026-04-25,0
+C028,Air Regulations,21,23,69,2026-03-28,0
+C029,Meteorology,25,29,82,2026-02-25,7
+C029,Navigation,20,30,41,2026-05-14,8
+C029,Air Regulations,18,28,40,2026-05-12,8
+C030,Meteorology,22,24,58,2026-05-12,8
+C030,Navigation,18,30,91,2026-04-22,1
+C030,Air Regulations,21,21,49,2026-04-14,3
