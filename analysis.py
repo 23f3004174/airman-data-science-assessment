@@ -8,6 +8,7 @@ import plotly.graph_objects as go
 # Ensure output directories exist
 os.makedirs('reports', exist_ok=True)
 os.makedirs('charts', exist_ok=True)
+os.makedirs('data', exist_ok=True)
 
 ALLOWED_STATUSES = {'completed', 'cancelled', 'delayed'}
 
@@ -357,24 +358,119 @@ def compute_metrics(data):
 
     # Finance analytics with safe division
     payments = payments.copy()
-    # Protect against zero invoice amounts
+
+    # Safe percentage calculations
     payments['payment_completion_pct'] = np.where(
-        payments['invoiced_amount'] != 0,
+        payments['invoiced_amount'] > 0,
         (payments['paid_amount'] / payments['invoiced_amount']) * 100,
         0
     )
+
     payments['payment_risk_pct'] = np.where(
-        payments['invoiced_amount'] != 0,
+        payments['invoiced_amount'] > 0,
         (payments['outstanding_amount'] / payments['invoiced_amount']) * 100,
         0
     )
-    payments = payments.merge(cadets[['cadet_id', 'name', 'progress_pct']], on='cadet_id')
-    payments['continuity_risk'] = payments.apply(
-        lambda row: 'High' if row['payment_risk_pct'] > 40 and row['progress_pct'] < 60 else ('Medium' if row['payment_risk_pct'] > 20 else 'Low'),
+
+    # Merge cadet progress safely
+    payments = payments.merge(
+        cadets[['cadet_id', 'name', 'progress_pct']],
+        on='cadet_id',
+        how='left'
+    )
+
+    # Convert payment date safely
+    payments['last_payment_date'] = pd.to_datetime(
+        payments['last_payment_date'],
+        errors='coerce'
+    )
+
+    # Days since last payment
+    payments['days_since_payment'] = (
+        pd.Timestamp.today() - payments['last_payment_date']
+    ).dt.days.fillna(0)
+
+    # Payment risk score
+    payments['payment_risk_score'] = (
+        (payments['payment_risk_pct'] * 0.6) +
+        np.where(payments['days_since_payment'] > 45, 25, 0) +
+        np.where(payments['progress_pct'] < 60, 15, 0)
+    ).clip(0, 100)
+
+    # Risk level classification
+    payments['payment_risk_level'] = payments['payment_risk_score'].apply(
+        lambda x: 'High'
+        if x >= 70
+        else ('Medium' if x >= 40 else 'Low')
+    )
+
+    # Training continuity relationship
+    payments['training_continuity_risk'] = payments.apply(
+        lambda row:
+            'Training Delay Likely'
+            if row['payment_risk_score'] >= 70 and row['progress_pct'] < 60
+            else (
+                'Needs Monitoring'
+                if row['payment_risk_score'] >= 40
+                else 'Stable'
+            ),
         axis=1
     )
+
+    # Revenue leakage indicators
+    payments['revenue_leakage_flag'] = payments.apply(
+        lambda row:
+            'Potential Leakage'
+            if (
+                row['outstanding_amount'] > 100000 or
+                row['days_since_payment'] > 60
+            )
+            else 'Normal',
+        axis=1
+    )
+
+    # Risk reason generator
+    def generate_reason(row):
+        reasons = []
+
+        if row['payment_risk_pct'] > 40:
+            reasons.append('High outstanding')
+
+        if row['days_since_payment'] > 45:
+            reasons.append('Old last payment date')
+
+        if row['progress_pct'] < 60:
+            reasons.append('Slow training progress')
+
+        if not reasons:
+            return 'Low financial risk'
+
+        return ' + '.join(reasons)
+
+    payments['risk_reason'] = payments.apply(generate_reason, axis=1)
+
+    # Overall outstanding amount
     outstanding_total = payments['outstanding_amount'].sum()
-    payment_risk_summary = payments.sort_values('payment_risk_pct', ascending=False).head(10)
+
+    # Final finance risk summary
+    payment_risk_summary = payments[[
+        'cadet_id',
+        'name',
+        'outstanding_amount',
+        'payment_completion_pct',
+        'payment_risk_pct',
+        'payment_risk_score',
+        'payment_risk_level',
+        'training_continuity_risk',
+        'revenue_leakage_flag',
+        'risk_reason'
+    ]].sort_values(
+        by='payment_risk_score',
+        ascending=False
+    )
+
+    # Display top high-risk cadets
+    payment_risk_summary.head(10)
 
     # Cadet risk scoring
     cancellations_per_cadet = sorties[sorties['status'] == 'cancelled'].groupby('cadet_id').size().rename('cancel_count').reset_index()
@@ -609,9 +705,23 @@ def generate_reports(data, metrics, validation_report, risk_export):
         f.write('\n')
         f.write('## Top Payment Risk Cadets\n')
         for _, row in metrics['payment_risk_summary'].head(5).iterrows():
-            f.write(f'- {row.name}: {row.payment_risk_pct:.1f}% outstanding, continuity risk {row.continuity_risk}.\n')
+            f.write(f'- {row.name}: INR {row.outstanding_amount:,.0f} outstanding ({row.payment_risk_pct:.1f}%), Payment Risk: {row.payment_risk_level}, Training Continuity: {row.training_continuity_risk}.\n')
+            f.write(f'  Risk Reason: {row.risk_reason}\n')
         f.write('\n')
+        f.write('## Payment Risk Metrics\n')
+        f.write(f'- Average payment completion rate: {metrics["payments"]["payment_completion_pct"].mean():.1f}%\n')
+        f.write(f'- High-risk cadets (payment risk ≥ 70): {len(metrics["payment_risk_summary"][metrics["payment_risk_summary"]["payment_risk_level"] == "High"])}\n')
+        f.write(f'- Medium-risk cadets (payment risk 40-69): {len(metrics["payment_risk_summary"][metrics["payment_risk_summary"]["payment_risk_level"] == "Medium"])}\n')
+        f.write(f'- Cadets flagged for revenue leakage: {len(metrics["payment_risk_summary"][metrics["payment_risk_summary"]["revenue_leakage_flag"] == "Potential Leakage"])}\n')
+        f.write('\n')
+        f.write('## Training Continuity Insights\n')
+        continuity_at_risk = metrics['payment_risk_summary'][metrics['payment_risk_summary']['training_continuity_risk'] == 'Training Delay Likely']
+        if len(continuity_at_risk) > 0:
+            f.write(f'- {len(continuity_at_risk)} cadets show signs of training delay likelihood due to payment and progress issues.\n')
+        else:
+            f.write('- No cadets show immediate training delay risk from payment or progress metrics.\n')
         f.write('- Training continuity risk is elevated when cadets have both high outstanding balances and low flight progress.\n')
+        f.write('- Monitoring payment compliance and study engagement together improves prediction of training disruption.\n')
 
     with open('reports/methodology.md', 'w', encoding='utf-8') as f:
         f.write('# Methodology for Airman Cadet Risk Scoring\n')
